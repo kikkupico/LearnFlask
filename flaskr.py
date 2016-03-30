@@ -75,6 +75,7 @@ cors = CORS(app)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
+
 def init_db():
     """Creates the database tables."""
     with app.app_context():
@@ -114,11 +115,14 @@ def show_entries():
 
 
 @app.route('/api/entries/', methods=['GET'])
-#@crossdomain(origin='http://vramak.koding.io')
+#@crossdomain(origin='*')
 def api_get_entries():
     db = get_db()
     cur = db.execute('select title, text from entries order by id desc')
     entries = cur.fetchall()
+#    response = make_response(jsonify(entries))
+   # response.headers['Access-Control-Allow-Origin'] = "http://http://vramak.koding.io/LearnAngular/angular-seed-rest/app/" 
+   # return response
     return jsonify(entries)
    
 

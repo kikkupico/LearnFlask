@@ -13,7 +13,7 @@
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash, _app_ctx_stack, jsonify
-from flask.ext.cors import CORS
+#from flask.ext.cors import CORS #NOTE: This approach does not work
 
 from datetime import timedelta
 from flask import make_response, request, current_app
@@ -71,7 +71,7 @@ PASSWORD = 'default'
 
 # create our little application :)
 app = Flask(__name__)
-cors = CORS(app)
+#cors = CORS(app) #...does not work
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
@@ -115,16 +115,24 @@ def show_entries():
 
 
 @app.route('/api/entries/', methods=['GET'])
-#@crossdomain(origin='*')
+#@crossdomain(origin='http://vramak.koding.io') #NOTE:This approach does not work
 def api_get_entries():
     db = get_db()
     cur = db.execute('select title, text from entries order by id desc')
     entries = cur.fetchall()
-#    response = make_response(jsonify(entries))
-   # response.headers['Access-Control-Allow-Origin'] = "http://http://vramak.koding.io/LearnAngular/angular-seed-rest/app/" 
-   # return response
+    #response = make_response(jsonify(entries)) #NOTE: This approach does not work
+    #response.headers['Access-Control-Allow-Origin'] = "vramak.koding.io" 
+    #return response
     return jsonify(entries)
    
+
+@app.after_request #NOTE: THIS APPROACH WORKS
+def add_CORS_header(response):
+    h = response.headers
+    h['Access-Control-Allow-Origin'] = 'http://vramak.koding.io'
+#    h['Age'] = 1
+    return response
+    
 
 @app.route('/add', methods=['POST'])
 def add_entry():

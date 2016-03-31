@@ -76,6 +76,15 @@ app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
+def jsonify_entry_tuples(tuples):
+    output = "["
+    for t in tuples:
+        output = output + '{"title":"' + str(t[0]) + '","content":"' + str(t[1]) + '"},'
+    
+    output = output[:-1] + ']'
+    return output
+        
+
 def init_db():
     """Creates the database tables."""
     with app.app_context():
@@ -123,7 +132,11 @@ def api_get_entries():
     #response = make_response(jsonify(entries)) #NOTE: This approach does not work
     #response.headers['Access-Control-Allow-Origin'] = "vramak.koding.io" 
     #return response
-    return jsonify(entries)
+    
+    response = make_response(jsonify_entry_tuples(entries))
+    response.headers['Content-Type'] = "application/json" 
+    return response
+    #return jsonify_entry_tuples(entries)
    
 
 @app.after_request #NOTE: THIS APPROACH WORKS

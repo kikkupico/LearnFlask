@@ -1,0 +1,2 @@
+1. #CORS cors can be enabled by setting the 'access-control-allow-origin' response headed to the accessed domain name (with http://). In flask this can be done easily by using the @app.after_request decorator to add the CORS header to every response.
+2. #caching while debugging CORS remember to clear browser cache and also to access api once from browser. Accessing api from browser will refresh the api and the latest api response will be loaded by the browser.
